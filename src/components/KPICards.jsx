@@ -111,14 +111,24 @@ function LiveStatCard({ label, value, sub, accent }) {
   )
 }
 
+// Must match KanbanBoard SEED so KPI reads correctly before any drag interaction
+const KANBAN_SEED = [
+  { id: '1', title: 'IGEL White Paper',          category: 'EUC',    priority: 'high',   column: 'In Progress' },
+  { id: '2', title: 'CPS Site Polish',            category: 'Web',    priority: 'high',   column: 'In Progress' },
+  { id: '3', title: 'Avocado Toast Rebrand',      category: 'Web',    priority: 'medium', column: 'Backlog' },
+  { id: '4', title: 'Clayton Park Swim Site',     category: 'Web',    priority: 'medium', column: 'Backlog' },
+  { id: '5', title: 'SEO Strategy Doc',           category: 'Admin',  priority: 'low',    column: 'Backlog' },
+  { id: '6', title: 'Mapbox Token Restriction',   category: 'Web',    priority: 'high',   column: 'Review' },
+]
+
 export default function KPICards() {
   // Pull Claude Sessions from usage tracker
   const [usage] = useLocalStorage('claude_usage', {})
   const today = todayKey()
   const todaySessions = usage[today]?.sessions || 0
 
-  // Pull Open Tasks from Kanban (non-Done cards)
-  const [kanban] = useLocalStorage('kanban', [])
+  // Pull Open Tasks from Kanban (non-Done cards) — use same seed as KanbanBoard
+  const [kanban] = useLocalStorage('kanban', KANBAN_SEED)
   const openTasks = kanban.filter((c) => c.column !== 'Done').length
 
   // Pull Site Updates from Activity Log "Web Work" tab this week
