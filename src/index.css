@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-900: #0d1b2a;
+  --color-navy-800: #1b2838;
+  --color-navy-700: #243447;
+  --color-navy-600: #2e4057;
+  --color-sf-blue: #0176d3;
+  --color-sf-blue-light: #1b96ff;
+  --color-sf-hover: #162a3e;
+  --color-content-bg: #f3f3f3;
+  --color-topbar-bg: #ffffff;
+
+  --font-sans: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
