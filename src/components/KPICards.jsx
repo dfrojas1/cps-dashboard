@@ -37,33 +37,41 @@ function JobAppsCard() {
   const pct = Math.min((count / TARGET) * 100, 100)
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+    <div className="bg-cc-panel rounded-lg p-5 border border-cc-border flex flex-col gap-3 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-cc-red/[0.03] to-transparent pointer-events-none" />
+      <div className="flex items-center justify-between relative">
+        <span className="text-[10px] font-semibold text-cc-text-dim uppercase tracking-[0.15em]">
           Job Apps This Week
         </span>
         <button
           onClick={increment}
-          className="w-7 h-7 rounded-lg bg-sf-blue text-white text-sm font-bold hover:bg-sf-blue-light transition-colors flex items-center justify-center"
+          className="w-7 h-7 rounded bg-cc-red/20 border border-cc-red/40 text-cc-red text-sm font-bold hover:bg-cc-red/30 transition-colors flex items-center justify-center font-mono"
         >
           +
         </button>
       </div>
-      <div className="flex items-baseline gap-1.5">
-        <span className="text-3xl font-bold text-gray-900">{count}</span>
-        <span className="text-sm text-gray-400">/ {TARGET}</span>
+      <div className="flex items-baseline gap-2 relative">
+        <span className="text-4xl font-bold font-mono text-cc-red drop-shadow-[0_0_12px_rgba(220,38,38,0.3)]">
+          {count}
+        </span>
+        <span className="text-sm text-cc-text-muted font-mono">/ {TARGET}</span>
       </div>
-      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-cc-well rounded-full overflow-hidden relative">
         <div
-          className="h-full rounded-full transition-all duration-300"
+          className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            backgroundColor: pct >= 100 ? '#10b981' : pct >= 50 ? '#0176d3' : '#f59e0b',
+            background: pct >= 100
+              ? 'linear-gradient(90deg, #22c55e, #4ade80)'
+              : pct >= 50
+              ? 'linear-gradient(90deg, #dc2626, #ef4444)'
+              : 'linear-gradient(90deg, #f59e0b, #fbbf24)',
+            boxShadow: pct >= 50 ? '0 0 10px rgba(220,38,38,0.4)' : '0 0 10px rgba(245,158,11,0.3)',
           }}
         />
       </div>
-      <span className="text-xs text-gray-400">
-        {weekData.gmail} from Gmail · {weekData.manual} manual
+      <span className="text-[10px] text-cc-text-muted font-mono relative">
+        {weekData.gmail} gmail · {weekData.manual} manual
       </span>
     </div>
   )
@@ -71,19 +79,20 @@ function JobAppsCard() {
 
 function StatCard({ label, value, sub }) {
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex flex-col gap-3">
-      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+    <div className="bg-cc-panel rounded-lg p-5 border border-cc-border flex flex-col gap-3 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
+      <span className="text-[10px] font-semibold text-cc-text-dim uppercase tracking-[0.15em] relative">
         {label}
       </span>
-      <span className="text-3xl font-bold text-gray-900">{value}</span>
-      {sub && <span className="text-xs text-gray-400">{sub}</span>}
+      <span className="text-4xl font-bold font-mono text-cc-text relative">{value}</span>
+      {sub && <span className="text-[10px] text-cc-text-muted font-mono relative">{sub}</span>}
     </div>
   )
 }
 
 export default function KPICards() {
   return (
-    <div className="grid grid-cols-4 gap-5">
+    <div className="grid grid-cols-4 gap-3">
       <JobAppsCard />
       <StatCard label="Claude Sessions" value="—" sub="Today" />
       <StatCard label="Site Updates" value="—" sub="This week" />

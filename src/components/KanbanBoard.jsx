@@ -2,10 +2,10 @@ import { useState, useRef } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 const CATEGORIES = {
-  EUC:    { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200' },
-  Web:    { bg: 'bg-sky-100',    text: 'text-sky-700',    border: 'border-sky-200' },
-  Travel: { bg: 'bg-amber-100',  text: 'text-amber-700',  border: 'border-amber-200' },
-  Admin:  { bg: 'bg-emerald-100',text: 'text-emerald-700', border: 'border-emerald-200' },
+  EUC:    { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20' },
+  Web:    { bg: 'bg-sky-500/10',    text: 'text-sky-400',    border: 'border-sky-500/20' },
+  Travel: { bg: 'bg-amber-500/10',  text: 'text-amber-400',  border: 'border-amber-500/20' },
+  Admin:  { bg: 'bg-emerald-500/10',text: 'text-emerald-400', border: 'border-emerald-500/20' },
 }
 
 const COLUMNS = ['Backlog', 'In Progress', 'Review', 'Done']
@@ -19,10 +19,15 @@ const SEED = [
   { id: '6', title: 'Mapbox Token Restriction',   category: 'Web',    priority: 'high',   column: 'Review' },
 ]
 
-const PRIORITY_ICONS = { high: '🔴', medium: '🟡', low: '🟢' }
+const PRIORITY = {
+  high:   { color: 'bg-cc-red',   shadow: 'shadow-[0_0_6px_rgba(220,38,38,0.5)]' },
+  medium: { color: 'bg-cc-amber', shadow: 'shadow-[0_0_6px_rgba(245,158,11,0.4)]' },
+  low:    { color: 'bg-cc-green', shadow: 'shadow-[0_0_6px_rgba(34,197,94,0.4)]' },
+}
 
 function Card({ card, onDragStart }) {
   const cat = CATEGORIES[card.category]
+  const pri = PRIORITY[card.priority]
 
   return (
     <div
@@ -32,19 +37,17 @@ function Card({ card, onDragStart }) {
         e.dataTransfer.effectAllowed = 'move'
         onDragStart(card.id)
       }}
-      className="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow select-none"
+      className={`bg-cc-panel rounded-lg p-3 border cursor-grab active:cursor-grabbing hover:border-cc-red/30 transition-all select-none ${
+        card.priority === 'high' ? 'border-cc-red/20' : 'border-cc-border'
+      }`}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <span className="text-sm font-medium text-gray-900 leading-snug">
+        <span className="text-sm font-medium text-cc-text leading-snug">
           {card.title}
         </span>
-        <span className="text-xs shrink-0" title={card.priority}>
-          {PRIORITY_ICONS[card.priority]}
-        </span>
+        <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${pri.color} ${pri.shadow}`} />
       </div>
-      <span
-        className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded border ${cat.bg} ${cat.text} ${cat.border}`}
-      >
+      <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded border ${cat.bg} ${cat.text} ${cat.border}`}>
         {card.category}
       </span>
     </div>
@@ -57,10 +60,10 @@ function Column({ name, cards, onDrop, onDragStart, dragOver, setDragOver }) {
   return (
     <div className="flex flex-col min-w-0">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        <h3 className="text-[10px] font-semibold text-cc-text-dim uppercase tracking-[0.15em]">
           {name}
         </h3>
-        <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5 font-medium">
+        <span className="text-[10px] text-cc-text-muted bg-cc-well rounded px-1.5 py-0.5 font-mono">
           {cards.length}
         </span>
       </div>
@@ -77,8 +80,8 @@ function Column({ name, cards, onDrop, onDragStart, dragOver, setDragOver }) {
           const cardId = e.dataTransfer.getData('text/plain')
           onDrop(cardId, name)
         }}
-        className={`flex-1 flex flex-col gap-2.5 rounded-xl p-3 min-h-[200px] transition-colors ${
-          isOver ? 'bg-sf-blue/5 ring-2 ring-sf-blue/20' : 'bg-gray-50'
+        className={`flex-1 flex flex-col gap-2 rounded-lg p-2.5 min-h-[200px] transition-all ${
+          isOver ? 'bg-cc-red/5 ring-1 ring-cc-red/20' : 'bg-cc-well border border-cc-border/50'
         }`}
       >
         {cards.map((card) => (
@@ -106,9 +109,9 @@ export default function KanbanBoard() {
   }
 
   return (
-    <div className="mt-6">
-      <h2 className="text-sm font-semibold text-gray-900 mb-4">Projects</h2>
-      <div className="grid grid-cols-4 gap-4">
+    <div className="mt-5">
+      <h2 className="text-[10px] font-semibold text-cc-text-dim uppercase tracking-[0.15em] mb-4">Projects</h2>
+      <div className="grid grid-cols-4 gap-3">
         {COLUMNS.map((col) => (
           <Column
             key={col}

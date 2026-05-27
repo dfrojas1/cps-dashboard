@@ -1,22 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-900: #0d1b2a;
-  --color-navy-800: #1b2838;
-  --color-navy-700: #243447;
-  --color-navy-600: #2e4057;
-  --color-sf-blue: #0176d3;
-  --color-sf-blue-light: #1b96ff;
-  --color-sf-hover: #162a3e;
-  --color-content-bg: #f3f3f3;
-  --color-topbar-bg: #ffffff;
+  --color-cc-black: #0a0a0a;
+  --color-cc-panel: #111111;
+  --color-cc-surface: #1a1a1a;
+  --color-cc-well: #0f0f0f;
+  --color-cc-border: #2a2a2a;
+  --color-cc-border-red: #3a1515;
+  --color-cc-red: #dc2626;
+  --color-cc-red-dim: #991b1b;
+  --color-cc-red-glow: #ef4444;
+  --color-cc-amber: #f59e0b;
+  --color-cc-green: #22c55e;
+  --color-cc-text: #e5e5e5;
+  --color-cc-text-dim: #737373;
+  --color-cc-text-muted: #525252;
+  --color-content-bg: #0a0a0a;
+  --color-topbar-bg: #111111;
 
   --font-sans: "Inter", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
+  background: var(--color-cc-black);
+  color: var(--color-cc-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

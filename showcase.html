@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CPS Dashboard — Command Center Showcase</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cc-black: #0a0a0a;
+    --cc-panel: #111111;
+    --cc-surface: #1a1a1a;
+    --cc-well: #0f0f0f;
+    --cc-border: #2a2a2a;
+    --cc-red: #dc2626;
+    --cc-red-dim: #991b1b;
+    --cc-red-glow: #ef4444;
+    --cc-amber: #f59e0b;
+    --cc-green: #22c55e;
+    --cc-text: #e5e5e5;
+    --cc-text-dim: #737373;
+    --cc-text-muted: #525252;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--cc-black);
+    color: var(--cc-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ─── Page Navigation ─── */
+  .page-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--cc-panel);
+    border-bottom: 1px solid var(--cc-border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 32px;
+  }
+  .page-nav::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(220,38,38,0.3), transparent);
+  }
+  .page-nav button {
+    background: none; border: none; color: var(--cc-text-dim);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 16px 24px; cursor: pointer; letter-spacing: 0.15em;
+    text-transform: uppercase; border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .page-nav button:hover { color: var(--cc-text); }
+  .page-nav button.active { color: var(--cc-red); border-bottom-color: var(--cc-red); }
+  .page-nav .title {
+    font-size: 13px; font-weight: 700; color: var(--cc-text);
+    letter-spacing: 0.2em; margin-right: 32px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .page-nav .title .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--cc-red);
+    box-shadow: 0 0 8px rgba(220,38,38,0.6);
+  }
+
+  .page { display: none; padding: 32px; position: relative; }
+  .page.active { display: block; }
+
+  /* ─── Crosshair Background ─── */
+  .crosshair-bg {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .page { position: relative; z-index: 1; }
+
+  /* ─── Grid Helpers ─── */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid-3-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+  /* ─── Card Base ─── */
+  .card {
+    background: var(--cc-panel);
+    border: 1px solid var(--cc-border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card .vignette {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(220,38,38,0.03), transparent);
+    pointer-events: none;
+  }
+  .card-label {
+    font-size: 10px; font-weight: 600; color: var(--cc-text-dim);
+    text-transform: uppercase; letter-spacing: 0.15em;
+  }
+  .card-big-num {
+    font-size: 36px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    color: var(--cc-red);
+    filter: drop-shadow(0 0 12px rgba(220,38,38,0.3));
+  }
+  .card-big-num.white { color: var(--cc-text); filter: none; }
+  .card-sub { font-size: 10px; color: var(--cc-text-muted); font-family: 'JetBrains Mono', monospace; }
+  .card-unit { font-size: 12px; color: var(--cc-text-muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* ─── Progress Bar ─── */
+  .progress-track {
+    width: 100%; height: 6px; background: var(--cc-well);
+    border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 999px; transition: width 0.5s;
+  }
+  .progress-fill.red {
+    background: linear-gradient(90deg, #dc2626, #ef4444);
+    box-shadow: 0 0 10px rgba(220,38,38,0.4);
+  }
+  .progress-fill.amber {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    box-shadow: 0 0 10px rgba(245,158,11,0.3);
+  }
+  .progress-fill.green {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    box-shadow: 0 0 10px rgba(34,197,94,0.4);
+  }
+
+  /* ─── Countdown ─── */
+  .countdown-row {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    padding: 16px 0;
+  }
+  .countdown-unit { text-align: center; }
+  .countdown-num {
+    font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    color: var(--cc-red); filter: drop-shadow(0 0 12px rgba(220,38,38,0.4));
+    font-variant-numeric: tabular-nums;
+  }
+  .countdown-label {
+    font-size: 9px; color: var(--cc-text-muted); text-transform: uppercase;
+    letter-spacing: 0.2em; margin-top: 4px;
+  }
+  .countdown-sep {
+    font-size: 20px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(220,38,38,0.4); margin-top: -16px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  @keyframes ping {
+    0% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* ─── Mission Status ─── */
+  .mission-card {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .radar-outer {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 2px solid rgba(220,38,38,0.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .radar-ping {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 1px solid rgba(220,38,38,0.1);
+    animation: ping 3s infinite;
+  }
+  .radar-inner {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid rgba(220,38,38,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radar-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--cc-green);
+    box-shadow: 0 0 10px rgba(34,197,94,0.5);
+  }
+
+  /* ─── Crosshair inside countdown card ─── */
+  .card-crosshair {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .card-crosshair .h-line {
+    position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+    background: rgba(220,38,38,0.06);
+  }
+  .card-crosshair .v-line {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+    background: rgba(220,38,38,0.06);
+  }
+  .card-crosshair .ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    border-radius: 50%; border: 1px solid rgba(220,38,38,0.05);
+  }
+  .card-crosshair .ring.sm { width: 128px; height: 128px; }
+  .card-crosshair .ring.lg { width: 224px; height: 224px; border-color: rgba(220,38,38,0.03); }
+
+  /* ─── Kanban ─── */
+  .kanban-col-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .kanban-col-header h3 {
+    font-size: 10px; font-weight: 600; color: var(--cc-text-dim);
+    text-transform: uppercase; letter-spacing: 0.15em;
+  }
+  .kanban-count {
+    font-size: 10px; color: var(--cc-text-muted); background: var(--cc-well);
+    border-radius: 4px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace;
+  }
+  .kanban-well {
+    background: var(--cc-well); border: 1px solid rgba(42,42,42,0.5);
+    border-radius: 10px; padding: 10px; min-height: 200px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .kanban-card {
+    background: var(--cc-panel); border-radius: 10px; padding: 12px;
+    border: 1px solid var(--cc-border);
+  }
+  .kanban-card.high { border-color: rgba(220,38,38,0.2); }
+  .kanban-card .top-row {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .kanban-card .title { font-size: 13px; font-weight: 500; color: var(--cc-text); line-height: 1.4; }
+  .pri-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+  }
+  .pri-dot.high { background: var(--cc-red); box-shadow: 0 0 6px rgba(220,38,38,0.5); }
+  .pri-dot.medium { background: var(--cc-amber); box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+  .pri-dot.low { background: var(--cc-green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  .cat-tag {
+    display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 4px; border: 1px solid;
+  }
+  .cat-euc { background: rgba(168,85,247,0.1); color: #c084fc; border-color: rgba(168,85,247,0.2); }
+  .cat-web { background: rgba(14,165,233,0.1); color: #38bdf8; border-color: rgba(14,165,233,0.2); }
+  .cat-admin { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
+  .cat-travel { background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2); }
+
+  /* ─── Trend Chart Mock ─── */
+  .chart-mock {
+    display: flex; align-items: flex-end; justify-content: space-around;
+    height: 160px; padding: 0 16px;
+  }
+  .chart-bar-group { display: flex; gap: 4px; align-items: flex-end; text-align: center; }
+  .chart-bar {
+    width: 28px; border-radius: 3px 3px 0 0; min-height: 4px;
+  }
+  .chart-bar.red { background: var(--cc-red); }
+  .chart-bar.green { background: var(--cc-green); }
+  .chart-label {
+    font-size: 10px; color: var(--cc-text-muted); font-family: 'JetBrains Mono', monospace;
+    margin-top: 8px;
+  }
+
+  /* ─── Activity Log ─── */
+  .tab-bar {
+    display: flex; gap: 2px; background: var(--cc-well); border-radius: 6px;
+    padding: 2px; border: 1px solid rgba(42,42,42,0.5); margin-bottom: 16px;
+  }
+  .tab-bar button {
+    flex: 1; background: none; border: 1px solid transparent;
+    color: var(--cc-text-muted); font-size: 10px; font-weight: 500;
+    padding: 6px; border-radius: 4px; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; transition: all 0.2s;
+  }
+  .tab-bar button.active {
+    background: var(--cc-surface); color: var(--cc-red);
+    border-color: rgba(220,38,38,0.2);
+  }
+  .log-entry {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; font-size: 12px; padding: 8px 12px; border-radius: 6px;
+    border: 1px solid; margin-bottom: 6px;
+  }
+  .log-entry.purple { border-color: rgba(168,85,247,0.2); background: rgba(168,85,247,0.05); }
+  .log-entry.sky { border-color: rgba(14,165,233,0.2); background: rgba(14,165,233,0.05); }
+  .log-entry .date {
+    font-size: 10px; color: var(--cc-text-muted); font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* ─── Usage Bars ─── */
+  .usage-bar-row { margin-bottom: 16px; }
+  .usage-bar-header {
+    display: flex; justify-content: space-between; font-size: 10px;
+    margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;
+  }
+  .usage-bar-label { color: var(--cc-text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+  .usage-bar-value { color: var(--cc-text-muted); }
+  .usage-track {
+    width: 100%; height: 8px; background: var(--cc-well);
+    border-radius: 999px; overflow: hidden;
+  }
+  .usage-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #dc2626, #991b1b);
+    box-shadow: 0 0 8px rgba(220,38,38,0.3);
+  }
+
+  /* ─── History Row ─── */
+  .history-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; padding: 8px 12px; border-radius: 6px;
+  }
+  .history-row:hover { background: rgba(255,255,255,0.02); }
+  .history-row.live {
+    background: rgba(220,38,38,0.05);
+    border: 1px solid rgba(220,38,38,0.2);
+  }
+  .live-badge {
+    font-size: 9px; background: rgba(220,38,38,0.2); color: var(--cc-red);
+    padding: 2px 6px; border-radius: 4px; font-weight: 700;
+    letter-spacing: 0.1em; margin-left: 8px;
+  }
+
+  /* ─── Section Titles ─── */
+  .section-title {
+    font-size: 10px; font-weight: 600; color: var(--cc-text-dim);
+    text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px;
+  }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  /* ─── Button ─── */
+  .btn-red {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500; padding: 6px 12px; border-radius: 6px;
+    background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.4);
+    color: var(--cc-red); cursor: pointer; letter-spacing: 0.1em;
+  }
+  .btn-plus {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.4);
+    color: var(--cc-red); font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── Input Mock ─── */
+  .input-mock {
+    font-size: 12px; padding: 8px 12px; border-radius: 6px;
+    background: var(--cc-well); border: 1px solid var(--cc-border);
+    color: var(--cc-text-muted); font-family: 'JetBrains Mono', monospace;
+  }
+
+  .mt-5 { margin-top: 20px; }
+  .mt-4 { margin-top: 16px; }
+  .gap-3 { gap: 12px; }
+  .flex-center { display: flex; align-items: center; }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .text-green { color: var(--cc-green); }
+  .text-red { color: var(--cc-red); }
+  .text-muted { color: var(--cc-text-muted); }
+</style>
+</head>
+<body>
+
+<!-- Crosshair Background -->
+<svg class="crosshair-bg" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50%" cy="50%" r="160" fill="none" stroke="#dc2626" stroke-opacity="0.03" stroke-width="1" />
+  <circle cx="50%" cy="50%" r="320" fill="none" stroke="#dc2626" stroke-opacity="0.025" stroke-width="1" />
+  <circle cx="50%" cy="50%" r="480" fill="none" stroke="#dc2626" stroke-opacity="0.02" stroke-width="1" />
+  <circle cx="50%" cy="50%" r="640" fill="none" stroke="#dc2626" stroke-opacity="0.015" stroke-width="1" />
+  <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#dc2626" stroke-opacity="0.03" stroke-width="1" />
+  <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#dc2626" stroke-opacity="0.03" stroke-width="1" />
+  <line x1="0" y1="0" x2="100%" y2="100%" stroke="#dc2626" stroke-opacity="0.015" stroke-width="1" />
+  <line x1="100%" y1="0" x2="0" y2="100%" stroke="#dc2626" stroke-opacity="0.015" stroke-width="1" />
+  <circle cx="50%" cy="50%" r="3" fill="#dc2626" fill-opacity="0.06" />
+</svg>
+
+<!-- Navigation -->
+<nav class="page-nav">
+  <div class="title"><span class="dot"></span> CMD CENTER</div>
+  <button class="active" onclick="showPage('dashboard')">Dashboard</button>
+  <button onclick="showPage('pipeline')">Pipeline</button>
+  <button onclick="showPage('activities')">Activities</button>
+  <button onclick="showPage('usage')">Claude Usage</button>
+</nav>
+
+<!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+<div id="page-dashboard" class="page active">
+
+  <!-- KPI Cards -->
+  <div class="grid-4">
+    <div class="card">
+      <div class="vignette"></div>
+      <div class="flex-between" style="position:relative">
+        <span class="card-label">Job Apps This Week</span>
+        <button class="btn-plus">+</button>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px;position:relative">
+        <span class="card-big-num">3</span>
+        <span class="card-unit">/ 12</span>
+      </div>
+      <div class="progress-track" style="margin-top:12px;position:relative">
+        <div class="progress-fill amber" style="width:25%"></div>
+      </div>
+      <span class="card-sub" style="margin-top:8px;display:block;position:relative">2 gmail &middot; 1 manual</span>
+    </div>
+    <div class="card">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.01),transparent);pointer-events:none"></div>
+      <span class="card-label" style="position:relative">Claude Sessions</span>
+      <span class="card-big-num white" style="display:block;margin-top:8px;position:relative">&mdash;</span>
+      <span class="card-sub" style="margin-top:8px;display:block;position:relative">Today</span>
+    </div>
+    <div class="card">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.01),transparent);pointer-events:none"></div>
+      <span class="card-label" style="position:relative">Site Updates</span>
+      <span class="card-big-num white" style="display:block;margin-top:8px;position:relative">&mdash;</span>
+      <span class="card-sub" style="margin-top:8px;display:block;position:relative">This week</span>
+    </div>
+    <div class="card">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.01),transparent);pointer-events:none"></div>
+      <span class="card-label" style="position:relative">Open Tasks</span>
+      <span class="card-big-num white" style="display:block;margin-top:8px;position:relative">&mdash;</span>
+      <span class="card-sub" style="margin-top:8px;display:block;position:relative">Across projects</span>
+    </div>
+  </div>
+
+  <!-- Countdown + Mission Status -->
+  <div class="grid-3-2-1 mt-5">
+    <div class="card">
+      <div class="card-crosshair">
+        <div class="h-line"></div><div class="v-line"></div>
+        <div class="ring sm"></div><div class="ring lg"></div>
+      </div>
+      <div class="vignette"></div>
+      <div class="flex-between" style="position:relative">
+        <div class="flex-center" style="gap:8px">
+          <span class="card-label">Weekly Reset</span>
+        </div>
+        <span class="card-sub">Next Monday 00:00</span>
+      </div>
+      <div class="countdown-row" id="countdown-display">
+        <div class="countdown-unit"><span class="countdown-num" id="cd-d">04</span><div class="countdown-label">Days</div></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-h">05</span><div class="countdown-label">Hours</div></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-m">42</span><div class="countdown-label">Mins</div></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="countdown-num" id="cd-s">18</span><div class="countdown-label">Secs</div></div>
+      </div>
+      <div style="position:relative">
+        <div class="flex-between" style="margin-bottom:6px">
+          <span class="card-sub" style="text-transform:uppercase;letter-spacing:0.1em">Week elapsed</span>
+          <span class="card-sub" id="cd-pct">40%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill red" id="cd-bar" style="width:40%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card mission-card">
+      <div class="vignette" style="background:linear-gradient(to bottom right,rgba(220,38,38,0.03),transparent)"></div>
+      <span class="card-sub" style="text-transform:uppercase;letter-spacing:0.2em;position:relative">Mission Status</span>
+      <div class="radar-outer" style="margin-top:12px;position:relative">
+        <div class="radar-ping"></div>
+        <div class="radar-inner"><div class="radar-dot"></div></div>
+      </div>
+      <span class="mono" style="font-size:10px;color:var(--cc-green);font-weight:700;letter-spacing:0.1em;margin-top:8px;position:relative">ACTIVE</span>
+    </div>
+  </div>
+
+  <!-- Kanban -->
+  <div class="mt-5">
+    <h2 class="section-title">Projects</h2>
+    <div class="grid-4">
+      <!-- Backlog -->
+      <div>
+        <div class="kanban-col-header"><h3>Backlog</h3><span class="kanban-count">2</span></div>
+        <div class="kanban-well">
+          <div class="kanban-card"><div class="top-row"><span class="title">Clayton Park Swim Site</span><span class="pri-dot medium"></span></div><span class="cat-tag cat-web">Web</span></div>
+          <div class="kanban-card"><div class="top-row"><span class="title">SEO Strategy Doc</span><span class="pri-dot low"></span></div><span class="cat-tag cat-admin">Admin</span></div>
+        </div>
+      </div>
+      <!-- In Progress -->
+      <div>
+        <div class="kanban-col-header"><h3>In Progress</h3><span class="kanban-count">3</span></div>
+        <div class="kanban-well">
+          <div class="kanban-card high"><div class="top-row"><span class="title">IGEL White Paper</span><span class="pri-dot high"></span></div><span class="cat-tag cat-euc">EUC</span></div>
+          <div class="kanban-card high"><div class="top-row"><span class="title">CPS Site Polish</span><span class="pri-dot high"></span></div><span class="cat-tag cat-web">Web</span></div>
+          <div class="kanban-card"><div class="top-row"><span class="title">Avocado Toast Rebrand</span><span class="pri-dot medium"></span></div><span class="cat-tag cat-web">Web</span></div>
+        </div>
+      </div>
+      <!-- Review -->
+      <div>
+        <div class="kanban-col-header"><h3>Review</h3><span class="kanban-count">1</span></div>
+        <div class="kanban-well">
+          <div class="kanban-card high"><div class="top-row"><span class="title">Mapbox Token Restriction</span><span class="pri-dot high"></span></div><span class="cat-tag cat-web">Web</span></div>
+        </div>
+      </div>
+      <!-- Done -->
+      <div>
+        <div class="kanban-col-header"><h3>Done</h3><span class="kanban-count">0</span></div>
+        <div class="kanban-well"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trend + Activity -->
+  <div class="grid-2 mt-5">
+    <div class="card">
+      <div class="section-header">
+        <span class="card-label">Weekly Trends</span>
+        <span class="card-sub">Last 6 weeks</span>
+      </div>
+      <div class="chart-mock">
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:8px"></div><div class="chart-bar green" style="height:12px"></div></div><div class="chart-label">Apr 14</div></div>
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:16px"></div><div class="chart-bar green" style="height:24px"></div></div><div class="chart-label">Apr 21</div></div>
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:4px"></div><div class="chart-bar green" style="height:8px"></div></div><div class="chart-label">Apr 28</div></div>
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:20px"></div><div class="chart-bar green" style="height:32px"></div></div><div class="chart-label">May 5</div></div>
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:12px"></div><div class="chart-bar green" style="height:16px"></div></div><div class="chart-label">May 12</div></div>
+        <div><div class="chart-bar-group"><div class="chart-bar red" style="height:80px"></div><div class="chart-bar green" style="height:4px"></div></div><div class="chart-label">May 19</div></div>
+      </div>
+      <div style="display:flex;gap:16px;justify-content:center;margin-top:16px">
+        <span class="card-sub"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cc-red);margin-right:4px"></span> Job Apps</span>
+        <span class="card-sub"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cc-green);margin-right:4px"></span> Tasks Closed</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-label" style="display:block;margin-bottom:16px">Activity Log</span>
+      <div class="tab-bar">
+        <button class="active">Claude Code <span class="text-muted">1</span></button>
+        <button>Web Work</button>
+        <button>Notes</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <span class="input-mock" style="flex:1">What did you work on?</span>
+        <span class="input-mock">05/27/2026</span>
+        <button class="btn-red">ADD</button>
+      </div>
+      <div class="log-entry purple">
+        <span style="color:var(--cc-text)">Built KPI cards and Kanban board for CPS dashboard</span>
+        <span class="date">2026-05-27</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PIPELINE ═══════════════════════ -->
+<div id="page-pipeline" class="page">
+  <h2 class="section-title">Projects</h2>
+  <div class="grid-4">
+    <div>
+      <div class="kanban-col-header"><h3>Backlog</h3><span class="kanban-count">2</span></div>
+      <div class="kanban-well">
+        <div class="kanban-card"><div class="top-row"><span class="title">Clayton Park Swim Site</span><span class="pri-dot medium"></span></div><span class="cat-tag cat-web">Web</span></div>
+        <div class="kanban-card"><div class="top-row"><span class="title">SEO Strategy Doc</span><span class="pri-dot low"></span></div><span class="cat-tag cat-admin">Admin</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kanban-col-header"><h3>In Progress</h3><span class="kanban-count">3</span></div>
+      <div class="kanban-well">
+        <div class="kanban-card high"><div class="top-row"><span class="title">IGEL White Paper</span><span class="pri-dot high"></span></div><span class="cat-tag cat-euc">EUC</span></div>
+        <div class="kanban-card high"><div class="top-row"><span class="title">CPS Site Polish</span><span class="pri-dot high"></span></div><span class="cat-tag cat-web">Web</span></div>
+        <div class="kanban-card"><div class="top-row"><span class="title">Avocado Toast Rebrand</span><span class="pri-dot medium"></span></div><span class="cat-tag cat-web">Web</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kanban-col-header"><h3>Review</h3><span class="kanban-count">1</span></div>
+      <div class="kanban-well">
+        <div class="kanban-card high"><div class="top-row"><span class="title">Mapbox Token Restriction</span><span class="pri-dot high"></span></div><span class="cat-tag cat-web">Web</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kanban-col-header"><h3>Done</h3><span class="kanban-count">0</span></div>
+      <div class="kanban-well"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ ACTIVITIES ═══════════════════════ -->
+<div id="page-activities" class="page">
+  <div class="card" style="max-width:800px">
+    <span class="card-label" style="display:block;margin-bottom:16px">Activity Log</span>
+    <div class="tab-bar">
+      <button class="active">Claude Code <span class="text-muted">1</span></button>
+      <button>Web Work</button>
+      <button>Notes</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <span class="input-mock" style="flex:1">What did you work on?</span>
+      <span class="input-mock">05/27/2026</span>
+      <button class="btn-red">ADD</button>
+    </div>
+    <div class="log-entry purple"><span style="color:var(--cc-text)">Built KPI cards and Kanban board for CPS dashboard</span><span class="date">2026-05-27</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CLAUDE USAGE ═══════════════════════ -->
+<div id="page-usage" class="page">
+  <div class="grid-3">
+    <div class="card">
+      <div class="vignette"></div>
+      <span class="card-label" style="position:relative">Today</span>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;position:relative">
+        <span class="card-big-num">0</span><span class="card-unit">sessions</span>
+      </div>
+      <span class="card-sub" style="position:relative">0 messages</span>
+    </div>
+    <div class="card">
+      <div class="vignette"></div>
+      <span class="card-label" style="position:relative">This Week</span>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;position:relative">
+        <span class="card-big-num">0</span><span class="card-unit">sessions</span>
+      </div>
+      <span class="card-sub" style="position:relative">7-day rolling</span>
+    </div>
+    <div class="card">
+      <div class="vignette"></div>
+      <span class="card-label" style="position:relative">This Month</span>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px;position:relative">
+        <span class="card-big-num">0</span><span class="card-unit">messages</span>
+      </div>
+      <span class="card-sub" style="position:relative">PRO tier</span>
+    </div>
+  </div>
+
+  <div class="card mt-5">
+    <div class="section-header">
+      <span class="card-label">Rate Limits</span>
+      <span class="card-sub">PRO Plan</span>
+    </div>
+    <div class="usage-bar-row">
+      <div class="usage-bar-header"><span class="usage-bar-label">Daily Sessions</span><span class="usage-bar-value">0 / 45</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:0%"></div></div>
+    </div>
+    <div class="usage-bar-row">
+      <div class="usage-bar-header"><span class="usage-bar-label">Monthly Messages</span><span class="usage-bar-value">0 / 900</span></div>
+      <div class="usage-track"><div class="usage-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="card mt-5">
+    <div class="section-header">
+      <span class="card-label">7-Day History</span>
+      <button class="btn-red">LOG SESSION</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Thu, May 21</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Fri, May 22</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Sat, May 23</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Sun, May 24</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Mon, May 25</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row"><span class="mono text-muted" style="font-size:12px">Tue, May 26</span><span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span></div>
+      <div class="history-row live">
+        <span class="mono" style="font-size:12px;color:var(--cc-red)">Wed, May 27 <span class="live-badge">LIVE</span></span>
+        <span class="mono text-muted" style="font-size:12px">0 sess &nbsp; 0 msg</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Page navigation
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Live countdown clock
+  function getNextMonday() {
+    const now = new Date();
+    const day = now.getDay();
+    const daysUntil = day === 0 ? 1 : day === 1 ? 7 : 8 - day;
+    const next = new Date(now);
+    next.setDate(now.getDate() + daysUntil);
+    next.setHours(0, 0, 0, 0);
+    return next;
+  }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tickCountdown() {
+    const now = new Date();
+    const target = getNextMonday();
+    let ms = Math.max(target - now, 0);
+    const d = Math.floor(ms / 86400000);
+    const h = Math.floor((ms % 86400000) / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    document.getElementById('cd-d').textContent = pad(d);
+    document.getElementById('cd-h').textContent = pad(h);
+    document.getElementById('cd-m').textContent = pad(m);
+    document.getElementById('cd-s').textContent = pad(s);
+    const totalH = d * 24 + h;
+    const pct = Math.round(((7*24 - totalH) / (7*24)) * 100);
+    document.getElementById('cd-pct').textContent = pct + '%';
+    document.getElementById('cd-bar').style.width = Math.max(pct, 1) + '%';
+  }
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+</script>
+</body>
+</html>
