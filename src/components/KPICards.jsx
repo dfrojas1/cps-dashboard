@@ -12,6 +12,25 @@ function getWeekKey() {
   return `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`
 }
 
+function todayKey() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function thisWeekKeys() {
+  const keys = []
+  const now = new Date()
+  const day = now.getDay()
+  const monday = new Date(now)
+  monday.setDate(now.getDate() - ((day + 6) % 7))
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    keys.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+  }
+  return keys
+}
+
 function JobAppsCard() {
   const weekKey = getWeekKey()
   const [data, setData] = useLocalStorage('job_apps', {})
@@ -77,26 +96,43 @@ function JobAppsCard() {
   )
 }
 
-function StatCard({ label, value, sub }) {
+function LiveStatCard({ label, value, sub, accent }) {
   return (
     <div className="bg-cc-panel rounded-lg p-5 border border-cc-border flex flex-col gap-3 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.01] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-cc-red/[0.02] to-transparent pointer-events-none" />
       <span className="text-[10px] font-semibold text-cc-text-dim uppercase tracking-[0.15em] relative">
         {label}
       </span>
-      <span className="text-4xl font-bold font-mono text-cc-text relative">{value}</span>
+      <span className={`text-4xl font-bold font-mono relative ${accent ? 'text-cc-red drop-shadow-[0_0_12px_rgba(220,38,38,0.3)]' : 'text-cc-text'}`}>
+        {value}
+      </span>
       {sub && <span className="text-[10px] text-cc-text-muted font-mono relative">{sub}</span>}
     </div>
   )
 }
 
 export default function KPICards() {
+  // Pull Claude Sessions from usage tracker
+  const [usage] = useLocalStorage('claude_usage', {})
+  const today = todayKey()
+  const todaySessions = usage[today]?.sessions || 0
+
+  // Pull Open Tasks from Kanban (non-Done cards)
+  const [kanban] = useLocalStorage('kanban', [])
+  const openTasks = kanban.filter((c) => c.column !== 'Done').length
+
+  // Pull Site Updates from Activity Log "Web Work" tab this week
+  const [activityLog] = useLocalStorage('activity_log', { 'Claude Code': [], 'Web Work': [], 'Notes': [] })
+  const weekKeys = thisWeekKeys()
+  const webEntries = (activityLog['Web Work'] || []).filter((e) => weekKeys.includes(e.date))
+  const siteUpdates = webEntries.length
+
   return (
     <div className="grid grid-cols-4 gap-3">
       <JobAppsCard />
-      <StatCard label="Claude Sessions" value="—" sub="Today" />
-      <StatCard label="Site Updates" value="—" sub="This week" />
-      <StatCard label="Open Tasks" value="—" sub="Across projects" />
+      <LiveStatCard label="Claude Sessions" value={todaySessions} sub="Today" accent={todaySessions > 0} />
+      <LiveStatCard label="Site Updates" value={siteUpdates} sub="This week" accent={siteUpdates > 0} />
+      <LiveStatCard label="Open Tasks" value={openTasks} sub="Across projects" accent={openTasks > 0} />
     </div>
   )
 }

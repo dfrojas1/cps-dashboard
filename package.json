@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync": "node scripts/obsidian-sync.mjs",
+    "deploy": "npm run sync && npm run build && npx wrangler pages deploy dist --project-name=cps-dashboard --commit-dirty=true"
   },
   "dependencies": {
     "react": "^19.2.6",

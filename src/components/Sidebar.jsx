@@ -3,7 +3,7 @@ const navItems = [
   { id: 'pipeline',    icon: '◆', label: 'Pipeline' },
   { id: 'activities',  icon: '◉', label: 'Activities' },
   { id: 'usage',       icon: '⬡', label: 'Claude Usage' },
-  { id: 'reports',     icon: '▣', label: 'Reports' },
+  { id: 'reports',     icon: '▣', label: 'Obsidian' },
   { id: 'settings',    icon: '⚙', label: 'Settings' },
 ]
 

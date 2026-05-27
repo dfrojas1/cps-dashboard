@@ -1,0 +1,150 @@
+{
+  "syncedAt": "2026-05-27T22:48:09.584Z",
+  "vault": "C:\\Users\\dfroj\\Documents\\Obsidian Vault\\David's Vault",
+  "claudeSessions": {
+    "today": 8,
+    "thisWeek": 9,
+    "total": 22,
+    "activeDays": 8,
+    "recentSessions": [
+      {
+        "date": "2026-05-27",
+        "time": "22:02"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "21:42"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "14:46"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "14:38"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "14:35"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "14:34"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "03:56"
+      },
+      {
+        "date": "2026-05-27",
+        "time": "01:14"
+      },
+      {
+        "date": "2026-05-21",
+        "time": "01:54"
+      },
+      {
+        "date": "2026-05-20",
+        "time": "15:59"
+      },
+      {
+        "date": "2026-05-20",
+        "time": "15:53"
+      },
+      {
+        "date": "2026-05-20",
+        "time": "15:53"
+      },
+      {
+        "date": "2026-04-30",
+        "time": "19:22"
+      },
+      {
+        "date": "2026-04-27",
+        "time": "19:26"
+      },
+      {
+        "date": "2026-04-27",
+        "time": "00:23"
+      },
+      {
+        "date": "2026-04-27",
+        "time": "00:16"
+      },
+      {
+        "date": "2026-04-27",
+        "time": "00:13"
+      },
+      {
+        "date": "2026-04-25",
+        "time": "00:09"
+      },
+      {
+        "date": "2026-04-24",
+        "time": "23:58"
+      },
+      {
+        "date": "2026-04-16",
+        "time": "13:20"
+      }
+    ]
+  },
+  "taskQueue": {
+    "active": [],
+    "queued": [
+      {
+        "ID": "HIGH",
+        "Task": "",
+        "Priority": "",
+        "Added": "",
+        "Dependencies": "",
+        "Notes": ""
+      }
+    ],
+    "completed": [],
+    "activeCount": 0,
+    "queuedCount": 1
+  },
+  "ltm": {
+    "hasDecisions": true,
+    "hasWorkflows": true,
+    "hasResearch": true,
+    "decisionCount": 1,
+    "workflowCount": 1,
+    "researchCount": 9
+  },
+  "sessionHistory": [
+    {
+      "date": "2026-05-27",
+      "count": 8
+    },
+    {
+      "date": "2026-05-21",
+      "count": 1
+    },
+    {
+      "date": "2026-05-20",
+      "count": 3
+    },
+    {
+      "date": "2026-04-30",
+      "count": 1
+    },
+    {
+      "date": "2026-04-27",
+      "count": 4
+    },
+    {
+      "date": "2026-04-25",
+      "count": 1
+    },
+    {
+      "date": "2026-04-24",
+      "count": 1
+    },
+    {
+      "date": "2026-04-16",
+      "count": 3
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import ActivityLog from './components/ActivityLog'
 import TrendChart from './components/TrendChart'
 import ClaudeUsage from './components/ClaudeUsage'
 import CountdownClock from './components/CountdownClock'
+import ObsidianSync from './components/ObsidianSync'
 
 function Placeholder({ title }) {
   return (
@@ -76,7 +77,7 @@ const pages = {
   pipeline:   () => <KanbanBoard />,
   activities: () => <ActivityLog />,
   usage:      () => <ClaudeUsage />,
-  reports:    () => <Placeholder title="Reports" />,
+  reports:    () => <ObsidianSync />,
   settings:   () => <Placeholder title="Settings" />,
 }
 
