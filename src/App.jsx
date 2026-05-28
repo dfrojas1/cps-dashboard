@@ -64,7 +64,7 @@ export default function App() {
       <Sidebar active={page} onNavigate={setPage} />
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         <TopBar page={page} />
-        <main className="flex-1 overflow-auto p-8" style={{ background: 'rgba(10,10,10,0.75)' }}>
+        <main className="flex-1 overflow-auto p-8" style={{ background: 'rgba(10,10,10,0.55)' }}>
           <Page />
         </main>
       </div>
