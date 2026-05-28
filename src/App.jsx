@@ -11,6 +11,7 @@ import ObsidianSync from './components/ObsidianSync'
 import JobTimeline from './components/JobTimeline'
 import PipelineTracker from './components/PipelineTracker'
 import JobSearch from './components/JobSearch'
+import CpsArchitecture from './components/CpsArchitecture'
 import GameBackground from './components/GameBackground'
 
 function Placeholder({ title }) {
@@ -59,6 +60,7 @@ const pages = {
   jobs:       () => <><JobTimeline /><div className="mt-5"><JobSearch /></div></>,
   usage:      () => <ClaudeUsage />,
   reports:    () => <ObsidianSync />,
+  architecture: () => <CpsArchitecture />,
   settings:   () => <Placeholder title="Settings" />,
 }
 

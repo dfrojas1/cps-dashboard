@@ -4,8 +4,9 @@ const navItems = [
   { id: 'jobs',        icon: '◎', label: 'Job Tracker' },
   { id: 'activities',  icon: '◉', label: 'Activities' },
   { id: 'usage',       icon: '⬡', label: 'Claude Usage' },
-  { id: 'reports',     icon: '▣', label: 'Obsidian' },
-  { id: 'settings',    icon: '⚙', label: 'Settings' },
+  { id: 'reports',       icon: '▣', label: 'Obsidian' },
+  { id: 'architecture', icon: '⬢', label: 'CPS Site' },
+  { id: 'settings',     icon: '⚙', label: 'Settings' },
 ]
 
 export default function Sidebar({ active, onNavigate }) {
