@@ -8,6 +8,7 @@ import TrendChart from './components/TrendChart'
 import ClaudeUsage from './components/ClaudeUsage'
 import CountdownClock from './components/CountdownClock'
 import ObsidianSync from './components/ObsidianSync'
+import JobTimeline from './components/JobTimeline'
 import GameBackground from './components/GameBackground'
 
 function Placeholder({ title }) {
@@ -40,6 +41,9 @@ const pages = {
           </div>
         </div>
       </div>
+      <div className="mt-5">
+        <JobTimeline />
+      </div>
       <KanbanBoard />
       <div className="grid grid-cols-2 gap-3 mt-5">
         <TrendChart />
@@ -49,6 +53,7 @@ const pages = {
   ),
   pipeline:   () => <KanbanBoard />,
   activities: () => <ActivityLog />,
+  jobs:       () => <JobTimeline />,
   usage:      () => <ClaudeUsage />,
   reports:    () => <ObsidianSync />,
   settings:   () => <Placeholder title="Settings" />,

@@ -1,6 +1,7 @@
 const navItems = [
   { id: 'dashboard',   icon: '◈', label: 'Dashboard' },
   { id: 'pipeline',    icon: '◆', label: 'Pipeline' },
+  { id: 'jobs',        icon: '◎', label: 'Job Tracker' },
   { id: 'activities',  icon: '◉', label: 'Activities' },
   { id: 'usage',       icon: '⬡', label: 'Claude Usage' },
   { id: 'reports',     icon: '▣', label: 'Obsidian' },
