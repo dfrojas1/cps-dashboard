@@ -1,0 +1,45 @@
+{
+  "lastUpdated": "2026-05-28",
+  "hotLeads": [
+    { "contact": "Ethan Stonis", "status": "Referral in progress", "lastActivity": "2026-05-27", "notes": "David Rojas Candidacy — referral from Matt Gregor", "priority": "high" },
+    { "contact": "Matt Gregor", "status": "Referral source", "lastActivity": "2026-05-18", "notes": "Connected David to Ethan Stonis; maintain relationship", "priority": "high" },
+    { "contact": "Russell Griffin", "status": "Interview process", "lastActivity": "2026-05-20", "notes": "Discussing an interview process", "priority": "high" },
+    { "contact": "Marissa Brahos", "status": "Interview stage", "lastActivity": "2026-04-20", "notes": "Renewals Specialist opportunity — interview mentioned", "priority": "medium" },
+    { "contact": "Lauren (France) Rojas", "status": "Job lead shared", "lastActivity": "2026-05-20", "notes": "Shared Life360 Greenhouse job board link", "priority": "medium" },
+    { "contact": "Kayla King", "status": "New connection", "lastActivity": "2026-04-20", "notes": "Sr. Customer Success Manager at Lucid — inbound connect", "priority": "medium" }
+  ],
+  "activeOutreach": [
+    { "contact": "Hank Fields", "lastActivity": "2026-05-28", "notes": "Pushing on job search — recent outreach" },
+    { "contact": "Corynn Young", "lastActivity": "2026-05-28", "notes": "Sent attachment (likely resume/case study)" },
+    { "contact": "Zacaria' Harris", "lastActivity": "2026-05-28", "notes": "Recent exchange" },
+    { "contact": "Audrey W.", "lastActivity": "2026-05-26", "notes": "Networking touchpoint" },
+    { "contact": "Jon Stout", "lastActivity": "2026-04-15", "notes": "Notified about an application" },
+    { "contact": "Anna Thepkaisone", "lastActivity": "2026-03-10", "notes": "Renewals Manager (East) — potential lead" }
+  ],
+  "warmNetwork": [
+    { "contact": "Dania Portillo", "lastActivity": "2026-05-27", "notes": "Personal conversation" },
+    { "contact": "Connor Stewart", "lastActivity": "2026-05-01", "notes": "Follow-up conversation" },
+    { "contact": "Nicholas Hartman", "lastActivity": "2026-05-01", "notes": "Friendly check-in" },
+    { "contact": "Ron Richards", "lastActivity": "2026-04-20", "notes": "Post-vacation catch-up" },
+    { "contact": "Grace Chuang", "lastActivity": "2026-04-20", "notes": "Networking hello" },
+    { "contact": "Nathan Wiltzius", "lastActivity": "2026-04-08", "notes": "Friendly exchange" },
+    { "contact": "Lauren Lonker", "lastActivity": "2026-03-20", "notes": "Sent 2 attachments" },
+    { "contact": "Rebecca Bralley", "lastActivity": "2026-03-20", "notes": "Friendly exchange" },
+    { "contact": "Melissa Pannell Becker", "lastActivity": "2026-05-05", "notes": "Quick hello" }
+  ],
+  "summary": {
+    "referralsActive": 1,
+    "interviewProcesses": 2,
+    "jobLeadsToFollow": 1,
+    "newConnections": 1,
+    "outreachThisWeek": 4
+  },
+  "nextActions": [
+    { "action": "Follow up with Ethan Stonis", "detail": "Referral from Matt Gregor is your hottest lead. Confirm where the candidacy stands.", "priority": "critical" },
+    { "action": "Check Russell Griffin thread", "detail": "Clarify interview process status and next steps.", "priority": "high" },
+    { "action": "Apply to Life360", "detail": "Lauren shared a Greenhouse link on May 20; follow through if not already applied.", "priority": "high" },
+    { "action": "Engage Kayla King", "detail": "Sr. CSM at Lucid is a direct-fit connection. Continue the conversation.", "priority": "medium" },
+    { "action": "Follow up with Marissa Brahos", "detail": "Renewals Specialist interview was Apr 20; check status if no update since.", "priority": "medium" },
+    { "action": "Send thank-you to Matt Gregor", "detail": "Reinforce the referral relationship.", "priority": "low" }
+  ]
+}

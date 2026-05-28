@@ -9,6 +9,7 @@ import ClaudeUsage from './components/ClaudeUsage'
 import CountdownClock from './components/CountdownClock'
 import ObsidianSync from './components/ObsidianSync'
 import JobTimeline from './components/JobTimeline'
+import PipelineTracker from './components/PipelineTracker'
 import GameBackground from './components/GameBackground'
 
 function Placeholder({ title }) {
@@ -41,8 +42,9 @@ const pages = {
           </div>
         </div>
       </div>
-      <div className="mt-5">
+      <div className="grid grid-cols-2 gap-3 mt-5">
         <JobTimeline />
+        <PipelineTracker />
       </div>
       <KanbanBoard />
       <div className="grid grid-cols-2 gap-3 mt-5">
@@ -51,7 +53,7 @@ const pages = {
       </div>
     </>
   ),
-  pipeline:   () => <KanbanBoard />,
+  pipeline:   () => <><PipelineTracker /><div className="mt-5"><KanbanBoard /></div></>,
   activities: () => <ActivityLog />,
   jobs:       () => <JobTimeline />,
   usage:      () => <ClaudeUsage />,
