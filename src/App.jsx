@@ -10,6 +10,7 @@ import CountdownClock from './components/CountdownClock'
 import ObsidianSync from './components/ObsidianSync'
 import JobTimeline from './components/JobTimeline'
 import PipelineTracker from './components/PipelineTracker'
+import JobSearch from './components/JobSearch'
 import GameBackground from './components/GameBackground'
 
 function Placeholder({ title }) {
@@ -55,7 +56,7 @@ const pages = {
   ),
   pipeline:   () => <><PipelineTracker /><div className="mt-5"><KanbanBoard /></div></>,
   activities: () => <ActivityLog />,
-  jobs:       () => <JobTimeline />,
+  jobs:       () => <><JobTimeline /><div className="mt-5"><JobSearch /></div></>,
   usage:      () => <ClaudeUsage />,
   reports:    () => <ObsidianSync />,
   settings:   () => <Placeholder title="Settings" />,
