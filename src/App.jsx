@@ -8,39 +8,12 @@ import TrendChart from './components/TrendChart'
 import ClaudeUsage from './components/ClaudeUsage'
 import CountdownClock from './components/CountdownClock'
 import ObsidianSync from './components/ObsidianSync'
+import GameBackground from './components/GameBackground'
 
 function Placeholder({ title }) {
   return (
     <div className="flex items-center justify-center h-64 bg-cc-panel rounded-lg border border-cc-border border-dashed">
       <span className="text-cc-text-muted text-xs font-mono uppercase tracking-wider">{title} — coming soon</span>
-    </div>
-  )
-}
-
-/* Crosshair / target SVG background overlay */
-function CrosshairBG() {
-  return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        {/* Radial grid circles */}
-        <circle cx="50%" cy="50%" r="160" fill="none" stroke="#dc2626" strokeOpacity="0.03" strokeWidth="1" />
-        <circle cx="50%" cy="50%" r="320" fill="none" stroke="#dc2626" strokeOpacity="0.025" strokeWidth="1" />
-        <circle cx="50%" cy="50%" r="480" fill="none" stroke="#dc2626" strokeOpacity="0.02" strokeWidth="1" />
-        <circle cx="50%" cy="50%" r="640" fill="none" stroke="#dc2626" strokeOpacity="0.015" strokeWidth="1" />
-        {/* Crosshair lines */}
-        <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#dc2626" strokeOpacity="0.03" strokeWidth="1" />
-        <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#dc2626" strokeOpacity="0.03" strokeWidth="1" />
-        {/* Diagonal sweeps */}
-        <line x1="0" y1="0" x2="100%" y2="100%" stroke="#dc2626" strokeOpacity="0.015" strokeWidth="1" />
-        <line x1="100%" y1="0" x2="0" y2="100%" stroke="#dc2626" strokeOpacity="0.015" strokeWidth="1" />
-        {/* Corner tick marks */}
-        <line x1="48%" y1="0" x2="48%" y2="20" stroke="#dc2626" strokeOpacity="0.04" strokeWidth="1" />
-        <line x1="52%" y1="0" x2="52%" y2="20" stroke="#dc2626" strokeOpacity="0.04" strokeWidth="1" />
-        <line x1="48%" y1="100%" x2="48%" y2="calc(100% - 20px)" stroke="#dc2626" strokeOpacity="0.04" strokeWidth="1" />
-        <line x1="52%" y1="100%" x2="52%" y2="calc(100% - 20px)" stroke="#dc2626" strokeOpacity="0.04" strokeWidth="1" />
-        {/* Small center dot */}
-        <circle cx="50%" cy="50%" r="3" fill="#dc2626" fillOpacity="0.06" />
-      </svg>
     </div>
   )
 }
@@ -87,11 +60,11 @@ export default function App() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-cc-black">
-      <CrosshairBG />
+      <GameBackground />
       <Sidebar active={page} onNavigate={setPage} />
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
         <TopBar page={page} />
-        <main className="flex-1 overflow-auto bg-content-bg/80 p-8">
+        <main className="flex-1 overflow-auto p-8" style={{ background: 'rgba(10,10,10,0.75)' }}>
           <Page />
         </main>
       </div>

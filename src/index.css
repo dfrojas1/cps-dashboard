@@ -29,4 +29,46 @@ body {
   color: var(--color-cc-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: crosshair;
+}
+
+/* ─── Game-mode card effects ─── */
+.bg-cc-panel {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(17, 17, 17, 0.85) !important;
+}
+
+.bg-cc-panel:hover {
+  border-color: rgba(220, 38, 38, 0.3) !important;
+  box-shadow:
+    0 0 20px rgba(220, 38, 38, 0.08),
+    0 0 40px rgba(220, 38, 38, 0.04),
+    inset 0 1px 0 rgba(220, 38, 38, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Glowing numbers */
+@keyframes numberGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(220, 38, 38, 0.6), 0 0 40px rgba(220, 38, 38, 0.2); }
+}
+
+.text-cc-red {
+  animation: numberGlow 3s ease-in-out infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-cc-black); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-cc-red-dim);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-cc-red); }
+
+/* Selection color */
+::selection {
+  background: rgba(220, 38, 38, 0.3);
+  color: #fff;
 }
